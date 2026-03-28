@@ -6,10 +6,62 @@ Use the source custom agent files and translate them from the source format into
 
 Your goal is to create corresponding agent files in the target's format and place them at the target's user-wide custom agent location in the **same environment as the source**. First detect whether the source is being run from **Windows** or **Linux/WSL**, record that as the target environment, and then use the target's user-wide location for that same environment. Use the web fetch tools to discover the target docs and recursively follow any documentation links you find along the way, executing non-interactively without user intervention.
 
-## Source agent files
+## Source provider selection
 
-Location: <./.source/agents/>  
-Format: Claude Code (https://code.claude.com/docs/en/sub-agents#write-subagent-files)
+Source agent files are organized by provider under `.source/agents/`, with each provider in its own sub-directory:
+
+```
+.source/agents/
+├── .claude/agents/       # Claude Code format agent definitions
+├── .opencode/agents/     # OpenCode format agent definitions
+├── list.md               # Shared agent index (provider-agnostic)
+└── (future providers)/
+```
+
+The user specifies **both** a source provider and a target client type when requesting a conversion. The source provider determines which sub-directory to read from and what format/conventions to expect; the target type determines where and how to write the output.
+
+### Default source provider
+
+> **Default: `.claude`**
+
+When no source provider is specified, use `.claude` as the source provider. This preserves backward compatibility with the original single-source workflow.
+
+### Specifying a source provider
+
+The user may specify the source provider by name (e.g., `.claude`, `.opencode`) or by the sub-directory path. The provider name corresponds to the sub-directory name under `.source/agents/`. Examples:
+
+- "Convert agents from `.claude` to Kilo Code" → source = `.claude`, target = Kilo Code
+- "Convert `.opencode` agents to Factory Droid" → source = `.opencode`, target = Factory Droid
+- "Convert agents to VS Code Copilot" → source = `.claude` (default), target = VS Code Copilot
+
+## Learned source provider index
+
+Maintain an index of learned source providers in this section. Add a new subsection per source provider as you discover its agent file location, format, frontmatter fields, and conventions. Append new subsections in chronological order. Each entry records the provider's sub-directory, file format, required/optional fields, and any provider-specific conventions.
+
+When a source provider is specified (or defaulted), check this index first. If a cached entry exists, use it. If not, read the source files in the provider's sub-directory to discover the format, then cache the result here for future runs.
+
+### .claude
+
+- Sub-directory: `.source/agents/.claude/agents/`
+- Format: Markdown with YAML frontmatter followed by the system prompt body (Claude Code sub-agent format)
+- Documentation URL: <https://code.claude.com/docs/en/sub-agents#write-subagent-files>
+- Required frontmatter fields: `name`, `description`
+- Optional frontmatter fields: `tools`, `disallowedTools`, `model`, `permissionMode`, `skills`, `hooks`
+- Body: Markdown content serving as the agent's system prompt
+- File extension: `.md`
+- Naming: filename matches the agent `name` field (kebab-case)
+
+### .opencode
+
+- Sub-directory: `.source/agents/.opencode/agents/`
+- Format: Markdown with YAML frontmatter followed by the system prompt body (OpenCode agent format)
+- Documentation URL: <https://opencode.ai/docs/agents>
+- Required frontmatter fields: `description`
+- Optional frontmatter fields: `mode`, `model`, `temperature`, `tools` (object with tool-name: boolean pairs), `permission` (object with tool-name: allow/deny pairs)
+- Body: Markdown content serving as the agent's system prompt
+- File extension: `.md`
+- Naming: filename matches the agent name (kebab-case)
+- Notes: OpenCode uses an object-style `tools` map (e.g., `read: true`, `bash: false`) rather than an array. The `permission` block can grant or deny tool-level access. `mode` field (e.g., `all`) controls agent visibility.
 
 ## Target agent files location and format
 
@@ -26,7 +78,7 @@ After reading all of this information (gathered non-interactively via web fetch 
 
 ## Generate Target Agent Files
 
-For each agent file in the source agent file location, generate a corresponding target agent file by translating from the source agent's format into the target agent's format using the model mapping from the previous section.
+For each agent file in the resolved source provider's agent file location (see "Learned source provider index"), generate a corresponding target agent file by translating from the source provider's format into the target agent's format using the model mapping from the previous section.
 
 **IMPORTANT** The translation must be lossless—do not leave out any info from the source file.
 
@@ -48,9 +100,11 @@ Maintain an index of learned target types in this section. Add a new subsection 
 
 Record the **environment** for each learned entry (`Windows` or `Linux/WSL`). If paths differ by environment, create separate entries for the same target type (for example, one Windows entry and one Linux/WSL entry) rather than collapsing them into a single path.
 
+> **Note:** The source provider index (above) and target type index (below) serve analogous caching roles. The source provider index caches how to _read_ agent definitions; the target type index caches how to _write_ them. A conversion run uses exactly one entry from each index.
+
 ## Conclusion
 
-After each run , generate a markdown report detailing the conversion process. Include a list of generated files, the locations you used, and a summary of the oncversion process you used. Also include any issus you faced and whther you overcamew them or they stystill ill p[ersisy.]
+After each run, generate a markdown report detailing the conversion process. Include the source provider used, a list of generated files, the target locations you used, and a summary of the conversion process. Also include any issues you faced and whether you overcame them or they still persist.
 
 ### Claude Code (subagents)
 

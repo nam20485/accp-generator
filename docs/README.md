@@ -1,19 +1,21 @@
-# Claude Code Subagents
+# Source Agent Definitions
 
-This project defines a minimal set of Claude Code subagents to support targeted delegation and automation-first workflows on Windows (PowerShell/pwsh).
+This project defines source agent definitions organized by provider, used to generate target client agent files via the accp-generator workflow on Windows (PowerShell/pwsh).
 
-- Project agents live under `./agents/`.
-- Format: Markdown with YAML frontmatter (see files for examples).
+- Source agents are organized by provider under `.source/agents/<provider>/agents/`.
+  - `.source/agents/.claude/agents/` — Claude Code format
+  - `.source/agents/.opencode/agents/` — OpenCode format
+- Format: Markdown with YAML frontmatter (provider-specific fields; see files for examples).
 - Shell defaults: Windows, prefer PowerShell (pwsh). Avoid bash-only commands.
-- Research tasks should be delegated to the Researcher (uses gemini-mcp tools).
 
 Quick start:
-1) In VS Code with Claude Code enabled, open the Agents panel (`/agents`).
-2) The project-level agents will appear; select and use them in chats.
-3) Use the Orchestrator to plan, delegate to specialized agents, and approve work.
+1) Choose a source provider (default: `.claude`) and a target client type.
+2) Run the `generate-target-agents` prompt or skill to translate agents to the target format.
+3) See `generate-target-agents.md` for the full workflow, source provider index, and target type index.
 
 Primary references:
-- `scripts/agent-creation-rules.md` (authoring guide)
+- `.source/agents/list.md` (agent index)
+- `generate-target-agents.md` (task guide with source provider and target type caches)
 - https://github.com/nam20485/agent-instructions (canonical instruction modules)
 
 ---

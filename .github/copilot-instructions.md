@@ -3,7 +3,9 @@
 ## Project purpose
 - This repo is a generator for translating **source agent/prompt files** into a target client’s custom agents/commands format.
 - Source of truth:
-  - Claude Code agents: `.source/agents/*.md` (YAML frontmatter + body).
+  - Agent definitions organized by provider: `.source/agents/<provider>/agents/*.md` (YAML frontmatter + body).
+    - Claude Code agents: `.source/agents/.claude/agents/*.md`
+    - OpenCode agents: `.source/agents/.opencode/agents/*.md`
   - Copilot prompt files: `.source/prompts/*.prompt.md` (YAML frontmatter + body).
 - Task guides: `generate-target-agents.md` and `generate-target-commands.md`.
 
@@ -14,14 +16,16 @@
 
 ## Target-generation workflow (core repo behavior)
 When asked to generate target agents/commands:
-1. Read target vendor docs to find **user-wide** location, file format, and valid config fields.
-2. Build a clear field mapping from source → target (document in response if needed).
-3. Generate target files from `.source/agents` or `.source/prompts` using the mapping.
-4. Keep filenames consistent with the target’s naming rules.
+1. Resolve source provider (default: `.claude` per `generate-target-agents.md`).
+2. Read target vendor docs to find **user-wide** location, file format, and valid config fields.
+3. Build a clear field mapping from source → target (document in response if needed).
+4. Generate target files from `.source/agents/<provider>/agents/` or `.source/prompts` using the mapping.
+5. Keep filenames consistent with the target's naming rules.
 
 ## Examples of canonical sources
-- Agent index & usage: `.source/agents/instructions/list.md`
-- Example agent format: `.source/agents/orchestrator.md`, `.source/agents/researcher.md`
+- Agent index: `.source/agents/list.md`
+- Example Claude Code agent: `.source/agents/.claude/agents/orchestrator.md`, `.source/agents/.claude/agents/researcher.md`
+- Example OpenCode agent: `.source/agents/.opencode/agents/orchestrator.md`
 - Example prompt format: `.source/prompts/General.prompt.md`
 
 ## Outputs & locations
