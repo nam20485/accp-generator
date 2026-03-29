@@ -36,12 +36,18 @@ Build & Quality
 Planning
 - planner — Breaks work into tasks with acceptance criteria.
 - product-manager — Defines goals, constraints, acceptance criteria.
+- scrum-master — Facilitates cadence; removes blockers; enforces DoD.
 
 Specialized
 - cloud-infra-expert — Cloud architecture, IaC patterns, security baselines.
+- performance-optimizer — Profiles and enforces performance budgets.
+- security-expert — Threat modeling, secrets hygiene, dependency risk.
 - database-admin — Schema/migrations, performance, backup/restore.
+- data-scientist — Data pipelines, metrics, experiments, reproducibility.
+- ml-engineer — Model training/inference, evaluation, deployment readiness.
 - ux-ui-designer — Wireframes, flows, accessibility, design QA.
+- mobile-developer — Platform-specific builds and store readiness.
 - debugger — Repro steps, minimal failing tests, fix validation.
 - developer — Generalist for small, scoped tasks.
 - documentation-expert — Writes developer and user docs, quickstarts, and runbooks.
-- github-expert — GitHub operations, workflows, repository management.
+- prompt-engineer — System prompts, tool routing, guardrails.
