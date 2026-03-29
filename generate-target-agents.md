@@ -57,11 +57,12 @@ When a source provider is specified (or defaulted), check this index first. If a
 - Format: Markdown with YAML frontmatter followed by the system prompt body (OpenCode agent format)
 - Documentation URL: <https://opencode.ai/docs/agents>
 - Required frontmatter fields: `description`
-- Optional frontmatter fields: `mode`, `model`, `temperature`, `tools` (object with tool-name: boolean pairs), `permission` (object with tool-name: allow/deny pairs)
+- Optional frontmatter fields: `mode`, `model`, `temperature`, `permission` (object with tool-category: allow/ask/deny; categories: `edit`, `bash`, `webfetch`, `task`)
+- Deprecated frontmatter fields: `tools` (object with tool-name: boolean pairs) — retained as YAML comments for reference; superseded by `permission`
 - Body: Markdown content serving as the agent's system prompt
 - File extension: `.md`
 - Naming: filename matches the agent name (kebab-case)
-- Notes: OpenCode uses an object-style `tools` map (e.g., `read: true`, `bash: false`) rather than an array. The `permission` block can grant or deny tool-level access. `mode` field (e.g., `all`) controls agent visibility.
+- Notes: The `permission` field controls tool access with three levels: `allow` (default, can be omitted), `ask` (prompt before running), `deny` (disable). The `edit` permission covers write/edit/patch/multiedit. The `bash` permission supports per-command glob patterns. The legacy `tools` field (`read: true`, `bash: false`) is deprecated; `true` ≡ `allow` (default), `false` ≡ `deny`. `mode` field (e.g., `all`, `primary`, `subagent`) controls agent visibility.
 
 ## Target agent files location and format
 
